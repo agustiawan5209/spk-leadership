@@ -73,12 +73,12 @@ class PenilaianController extends Controller
             ->get();
         return Inertia::render('Penilaian/Form', [
             'alternatif' => $alternatif,
-            'aspek' => AspekKriteria::all(),
+            'aspek' => AspekKriteria::with(['kriteriapenilaian'])->get(),
             'kriteria' => KriteriaPenilaian::with(['subkriteria'])
-                ->when(Request::has('aspek_id'), function ($query, $aspek) {
+                ->when(Request::input('aspek_id') ?? null, function ($query, $aspek) {
                     $query->where('aspek_id', $aspek);
                 })->get(),
-            'aspek_kriteria' => AspekKriteria::when(Request::has('aspek_id'), function ($query, $aspek) {
+            'aspek_kriteria' => AspekKriteria::when(Request::input('aspek_id') ?? null, function ($query, $aspek) {
                 $query->where('id', $aspek);
             })->first(),
             'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'alternatif.staff.departement'])

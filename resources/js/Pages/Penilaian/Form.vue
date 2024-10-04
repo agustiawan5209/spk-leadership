@@ -29,7 +29,7 @@ const props = defineProps({
     },
 })
 const dateNow = new Date().toISOString().slice(0, 10);
-const aspekID = ref('')
+const aspekID = ref(props.aspek_kriteria.id)
 const aspekForm = useForm({
     aspek_id: '',
 })
@@ -80,8 +80,8 @@ if (props.alternatif.length > 0 && props.kriteria.length > 0) {
 };
 const Form = useForm({
     kategori: props.kategori.id,
-    // aspek_id: aspekID.value,
-    aspek_id: 1,
+    aspek_id: props.aspek_kriteria.id,
+    // aspek_id: 1,
     tgl_penilaian: dateNow,
     kriteria: [],
 })
@@ -96,8 +96,9 @@ function BobotPenilaian(index, idx, value) {
 
 function submit() {
     Form.kriteria = Penilaian_karyawan.value;
-    // Form.aspek_id = aspekForm.aspek_id;
-    Form.aspek_id = 1;
+    Form.aspek_id = aspekID.value;
+    console.log(Form.aspek_id)
+    // Form.aspek_id = 1;
     Form.post(route('Penilaian.store'), {
         onError: (err) => {
             var txt = "<ul>"
@@ -135,14 +136,14 @@ function submit() {
                         <div class="relative w-full inline-block align-middle overflow-hidden">
                             <div class="grid grid-cols-2 gap-7 items-center">
 
-                                <!-- <div class="relative  text-gray-500 focus-within:text-gray-900 mb-4">
+                                <div class="relative  text-gray-500 focus-within:text-gray-900 mb-4">
                                     <InputLabel for="tgl_penilaian" value="Aspek yang Dinilai" />
                                     <select v-model="aspekID" name="aspek_id" id="aspek_id" required
                                         class="px-2 py-1 md:px-3 md:py-2 placeholder-gray-400 border focus:outline-none sm:w-40 sm:text-sm border-gray-200 shadow-sm rounded-lg focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none ">
                                         <option value="">-----</option>
                                         <option v-for="col in aspek" :value="col.id">{{ col.nama }}</option>
                                     </select>
-                                </div> -->
+                                </div>
                                 <div class="relative  text-gray-500 focus-within:text-gray-900 mb-4">
                                     <InputLabel for="tgl_penilaian" value="Tanggal Penilaian" />
                                     <TextInput type="date" v-model="Form.tgl_penilaian" :readonly="true" />
