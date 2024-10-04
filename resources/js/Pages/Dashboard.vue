@@ -44,7 +44,7 @@ const props = defineProps({
                             <div class="text-lg font-semibold text-center">
                                 <span class="text-green-700 md:text-4xl">SISTEM PENDUKUNG KEPUTUSAN</span> <br>
                                 <span class="md:text-xl">PUNISMENT/REWARD MENGGUNAKAN METODE</span>
-                                PROFILE MATCHING<span class="text-red-600 text-2xl"> <br> DI BAWASLU BAWASLU PROVINSI SULAWESI SELATAN</span>
+                                PROFILE MATCHING<span class="text-red-600 text-2xl"> <br> DI BAWASLU KELOLA JASA ARTHA</span>
                             </div>
                         </div>
                     </div>
