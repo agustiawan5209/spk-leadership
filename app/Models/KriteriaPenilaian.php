@@ -48,4 +48,30 @@ class KriteriaPenilaian extends Model
             $query->orderBy('id', $order);
         });
     }
+    public function scopeFilterBySearch($query, $search)
+    {
+        $query->when($search ?? null, function ($query, $search) {
+            $query->where('nama', 'like', '%' . $search . '%');
+        });
+    }
+
+    public function scopeFilterByOrder($query, $order)
+    {
+        $query->when($order ?? null, function ($query, $order) {
+            $query->orderBy('id', $order);
+        });
+    }
+    public function scopeFilterByDate($query, $date)
+    {
+        $query->when($date ?? null, function ($query, $date) {
+            $query->whereDate('created_at', $date);
+        });
+    }
+
+    public function scopeFilterByAspek($query, $aspek_id)
+    {
+        $query->when($aspek_id ?? null, function ($query, $aspek_id) {
+            $query->where('aspek_id', $aspek_id);
+        });
+    }
 }

@@ -108,8 +108,8 @@ function deleteSlice(index){
 
         <div class="py-4 relative box-content">
             <section class="p-6 bg-gray-100 text-gray-900">
-                <PrimaryButton type="button" class="mb-3" @click="showSub = !showSub">Buat Sub Kriteria
-                </PrimaryButton>
+                <!-- <PrimaryButton type="button" class="mb-3" @click="showSub = !showSub">Buat Sub Kriteria
+                </PrimaryButton> -->
                 <form @submit.prevent="submit()" novalidate="" action="" class="container mx-auto space-y-12">
                     <div class="flex">
                         <fieldset :class="showSub ? 'w-[60%]' : 'w-full'"

@@ -21,19 +21,16 @@ class KriteriaPenilaianController extends Controller
     public function index()
     {
         $tableName = 'kriteria_penilaians'; // Ganti dengan nama tabel yang Anda inginkan
-        // $columns = DB::getSchemaBuilder()->getColumnListing($tableName);
-        $columns[] = 'id';
-        // $columns[] = 'nama_aspek';
-        $columns[] = 'nama';
-        $columns[] = 'persentase';
-        $columns[] = 'nilai_target';
-        $columns[] = 'factory';
+        $columns = DB::getSchemaBuilder()->getColumnListing($tableName);
 
         return Inertia::render('Admin/Kriteria/Index', [
             'search' =>  Request::input('search'),
             'table_colums' => array_values(array_diff($columns, ['remember_token', 'posyandus_id', 'password', 'email_verified_at', 'created_at', 'updated_at', 'user_id'])),
-            'data' => KriteriaPenilaian::filter(Request::only('search', 'order'))
+            'kriteria' => KriteriaPenilaian::filterBySearch(Request::input('search'))
+            ->filterByOrder(Request::input('order'))
+            ->filterByAspek(Request::input('aspek_id'))
                 ->paginate(10),
+                'aspek'=> AspekKriteria::all(),
             'can' => [
                 'add' => Auth::user()->can('add kriteria'),
                 'edit' => Auth::user()->can('edit kriteria'),
