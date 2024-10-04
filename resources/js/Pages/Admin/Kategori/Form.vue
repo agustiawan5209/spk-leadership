@@ -30,10 +30,16 @@ const Form = useForm({
     data_karyawan: '',
 })
 const tableKaryawan = ref(true)
-const DepartementId = ref('');
+const DepartementId = ref('1');
 const DataKaryawan = ref([]);
 const CheckBoxKaryawan = ref([])
+
+getListKaryawan(1);
 watch(DepartementId, (value) => {
+    getListKaryawan(value)
+})
+
+function getListKaryawan(value){
     axios.get(route('api.staff.list', { departement_id: value }))
         .then((res) => {
             if (res.status == 200) {
@@ -54,8 +60,7 @@ watch(DepartementId, (value) => {
             }
             console.log(DataKaryawan.value)
         }).catch(err => console.log(err))
-})
-
+}
 
 function submit() {
     Form.data_karyawan = CheckBoxKaryawan.value;
@@ -145,7 +150,7 @@ function deleteKaryawan(index,item){
                                     <InputError :message="Form.errors.status" />
                                 </div>
 
-                                <div class="col-span-full sm:col-span-3">
+                                <!-- <div class="col-span-full sm:col-span-3">
                                     <label for="departement" class="text-sm">Departement</label>
                                     <select id="departement" v-model="DepartementId"
                                         class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
@@ -154,7 +159,7 @@ function deleteKaryawan(index,item){
                                     </select>
                                     <InputError :message="Form.errors.departement_id" />
 
-                                </div>
+                                </div> -->
 
                             </div>
 

@@ -34,7 +34,7 @@ const isOpenDropdown = (menu) => openDropdown.value.includes(menu);
 
 </script>
 <template>
-    <ul>
+    <ul class="list-item space-y-3">
         <li>
             <NavLink :href="route('dashboard')" :active="route().current('dashboard')" :icon="['fas', 'home']">
 

@@ -14,9 +14,11 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Roboto', 'sans-serif'],
+                serif: ['Merriweather', 'serif'],
+
             },
-            colors:{
+            colors: {
                 'primary': '#1E3E62',
                 'secondary': '#FF6500',
             }

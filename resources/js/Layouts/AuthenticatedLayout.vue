@@ -36,31 +36,28 @@ window.addEventListener('resize', () => {
             </button>
 
             <div class="flex flex-col w-full h-full !bg-primary text-white">
-                <div class="flex flex-col items-center justify-center bg-secondary">
-                    <img class="inline-block w-8 h-8 object-cover rounded-full ring-2 ring-white" :src="user.profile_photo_path"
-                        alt="">
-                </div>
+
 
                 <Sidebar />
             </div>
         </aside>
         <aside key="dekstop"
-            class="fixed top-0 z-10 ml-[-100%] flex h-screen w-full flex-col justify-between border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%] overflow-y-auto">
+            class="fixed  top-0 z-10 ml-[-100%] flex h-screen w-full flex-col justify-between border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%] overflow-y-auto">
 
-            <div class="flex flex-col w-full h-full !bg-primary text-white">
-                <div class="flex flex-col items-center py-6 gap-7 justify-center bg-secondary">
+            <div class="flex mt-14 flex-col w-full h-full !bg-primary text-white">
+                <!-- <div class="flex flex-col items-center py-6 gap-7 justify-center bg-secondary">
                     <img v-if="user.profile_photo" class="inline-block w-20 h-20 object-cover rounded-full ring-2 ring-white" :src="user.profile_photo_path" alt="">
 
                         <img v-else class="inline-block w-20 h-20 rounded-full ring-2 ring-white" :src="'/images/vecteezy_profile-icon-design-vector_5544718.jpg'" alt="">
 
                     <h1 class="text-xl font-bold text-center">{{ user.name }} - {{user.staff?user.staff.nama_departement: 'Admin'}}</h1>
-                </div>
+                </div> -->
 
                 <Sidebar />
             </div>
         </aside>
     </transition-group>
-    <div class="ml-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%] ">
+    <div class="ml-auto mb-6 w-full">
         <div class="sticky top-0 h-16 border-b bg-primary lg:py-2.5 z-[100]">
             <div class="flex items-center justify-between space-x-4 px-6 2xl:container">
 
@@ -112,7 +109,7 @@ window.addEventListener('resize', () => {
             </div>
         </div>
 
-        <div class="px-2 pt-6 2xl:container relative">
+        <div class="px-2 pt-6 2xl:container relative lg:left-[15%] lg:w-[75%] xl:w-[80%] 2xl:w-[85%] ">
             <slot />
         </div>
     </div>

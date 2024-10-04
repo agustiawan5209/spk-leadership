@@ -114,7 +114,7 @@ class AspekKriteriaController extends Controller
      */
     public function destroy(AspekKriteria $aspekKriteria)
     {
-        $aspek = $aspekKriteria->find(Request::input('slug'));
+        $aspek = $aspekKriteria->find(Request::input('slug'))->delete();
 
         return redirect()->route('Aspek.index')->with('message', 'Berhasil Di Hapus!!');
     }

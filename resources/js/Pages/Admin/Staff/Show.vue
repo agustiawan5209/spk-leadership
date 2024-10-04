@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, usePage,Link } from '@inertiajs/vue3';
+import { Head, useForm, usePage, Link } from '@inertiajs/vue3';
 import Dropdown from '@/Components/Dropdown.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
@@ -35,7 +35,7 @@ const props = defineProps({
         </template>
 
         <div class="md:py-4 relative box-content">
-           <section class=" py-2 px-0 md:px-6  md:py-6 bg-primary text-dark">
+            <section class=" py-2 px-0 md:px-6  md:py-6 bg-primary text-dark">
                 <form novalidate="" action="" class="container flex flex-col mx-auto space-y-12">
                     <fieldset class="grid grid-cols-3 gap-6 p-6 rounded-md shadow-sm bg-gray-50">
                         <div class="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
@@ -47,6 +47,14 @@ const props = defineProps({
                                 </ul>
 
                                 <table class="w-full table">
+                                    <tr class="">
+                                        <td class="text-sm border-b py-2 font-bold">Foto Profil</td>
+                                        <td class="text-sm border-b text-gray-600">
+                                            <img class="w-64 h-max p-1 rounded-md ring-2 ring-gray-300 dark:ring-gray-500"
+                                                :src="staff.user.profile_photo_path" alt="Bordered avatar">
+
+                                        </td>
+                                    </tr>
                                     <tr class="">
                                         <td class="text-sm border-b py-2 font-bold">Nama</td>
                                         <td class="text-sm border-b text-gray-600">: {{ staff.nama }} </td>
