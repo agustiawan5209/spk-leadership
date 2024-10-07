@@ -23,10 +23,8 @@ class StorePenilaianRequest extends FormRequest
     {
         return [
             "kategori" => "required|exists:kategori_penilaians,id",
-            "aspek_id" => "required|exists:aspek_kriterias,id",
+            'alternatif' => 'required|exists:alternatifs,id',
             "kriteria" => 'required|array',
-            "kriteria.*.kriteria"=> 'required',
-            "kriteria.*.kriteria.*"=> 'required|between:1,5',
         ];
     }
 }

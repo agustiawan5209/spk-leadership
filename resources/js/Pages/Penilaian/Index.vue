@@ -131,8 +131,8 @@ console.log(cekPenilaian(props.data.data[0].penilaian))
                                     </div>
                                 </td>
                                 <td class="p-4 border-b border-blue-gray-50" v-if="item.status == 'aktif'">
-                                    <Link v-if="cekPenilaian(item.penilaian, item.id)"
-                                        :href="route('Penilaian.create', { kategori: item.id })">
+                                    <Link
+                                        :href="route('Penilaian.karyawan', { kategori: item.id })">
 
                                     <button
                                         class="relative select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-max p-2 rounded-lg text-gray-900 hover:bg-gray-900/10 active:bg-gray-900/20 border border-primary"
@@ -152,15 +152,7 @@ console.log(cekPenilaian(props.data.data[0].penilaian))
 
                                     </Link>
 
-                                    <button v-else
-                                        class="relative select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-max p-2 rounded-lg text-gray-900 hover:bg-gray-900/10 active:bg-gray-900/20 border border-primary"
-                                        type="button" :disabled="true">
-                                        <span class="text-xs flex items-center text-black">
-                                            Penilaian Telah Dibuat
-                                            <font-awesome-icon :icon="['fas', 'check']" />
-                                        </span>
 
-                                    </button>
                                 </td>
                             </tr>
                         </tbody>

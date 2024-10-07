@@ -47,41 +47,23 @@ watch(aspekID, (value) => {
 
 const Penilaian_karyawan = ref([]);
 
-if (props.alternatif.length > 0 && props.kriteria.length > 0) {
+if (props.aspek.length > 0 && props.kriteria.length > 0) {
 
-    const dataKaryawan = [...props.alternatif]; // Use spread operator to create a new array
     // Jadikan Kriteria ke dalam bentuk array
-    const Datakriteria = [...props.kriteria];
-    const kriteriaObject = Datakriteria.reduce((acc, curr, i) => ({
-        ...acc, [i]: 0
-        // {
-        //     kriteria_id: curr.id,
-        //     kriteria: curr,
-        //     bobot: 0,
-        // }
-    }), {});
-    const kriteriaData = Datakriteria.reduce((acc, curr, i) => ({
-        ...acc, [i]:
-        {
-            kriteria_id: curr.id,
-            kriteria: curr,
+    const Datakriteria = [...props.aspek];
+    Penilaian_karyawan.value = Datakriteria.reduce((acc, curr, i) => ({
+        ...acc, [i]: {
+            aspek:curr.id,
+            kriteria: [],
+            data: curr.kriteriapenilaian,
         }
     }), {});
-    // Create an object with kriteria as keys and empty
-    // buat array dari value karyawan
-    dataKaryawan.forEach((element, index) => {
-        Penilaian_karyawan.value[index] = {
-            staffId: element.staff,
-            staff_id: element.staff.id,
-            data_kriteria: { ...kriteriaData },
-            kriteria: { ...kriteriaObject } // Use spread operator to create a new object
-        }
-    });
 };
+console.log(Penilaian_karyawan.value)
 const Form = useForm({
     kategori: props.kategori.id,
-    aspek_id: props.aspek_kriteria.id,
     // aspek_id: 1,
+    alternatif: props.alternatif.id,
     tgl_penilaian: dateNow,
     kriteria: [],
 })
@@ -96,11 +78,9 @@ function BobotPenilaian(index, idx, value) {
 
 function submit() {
     Form.kriteria = Penilaian_karyawan.value;
-    Form.aspek_id = aspekID.value;
-    console.log(Form.aspek_id)
-    // Form.aspek_id = 1;
     Form.post(route('Penilaian.store'), {
         onError: (err) => {
+            console.log(err)
             var txt = "<ul>"
             Object.keys(err).forEach((item, val) => {
                 txt += `<li class="text-xs leading-7">${err[item]}</li>`
@@ -137,71 +117,78 @@ function submit() {
                             <div class="grid grid-cols-2 gap-7 items-center">
 
                                 <div class="relative  text-gray-500 focus-within:text-gray-900 mb-4">
-                                    <InputLabel for="tgl_penilaian" value="Aspek yang Dinilai" />
-                                    <select v-model="aspekID" name="aspek_id" id="aspek_id" required
-                                        class="px-2 py-1 md:px-3 md:py-2 placeholder-gray-400 border focus:outline-none sm:w-40 sm:text-sm border-gray-200 shadow-sm rounded-lg focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none ">
-                                        <option value="">-----</option>
-                                        <option v-for="col in aspek" :value="col.id">{{ col.nama }}</option>
-                                    </select>
-                                </div>
-                                <div class="relative  text-gray-500 focus-within:text-gray-900 mb-4">
                                     <InputLabel for="tgl_penilaian" value="Tanggal Penilaian" />
                                     <TextInput type="date" v-model="Form.tgl_penilaian" :readonly="true" />
                                 </div>
                             </div>
                             <div class="w-full overflow-x-auto">
-                                <table class=" min-w-full rounded-xl">
-                                    <thead>
-                                        <tr class="bg-gray-50">
-                                            <th scope="col"
-                                                class="px-1 py-2 text-left text-xs leading-6 font-semibold text-gray-900 capitalize rounded-t-xl">
-                                                Nama Karyawan </th>
-                                            <th scope="col"
-                                                class="px-1 py-2 text-left text-xs leading-6 font-semibold text-gray-900 capitalize">
-                                                Departement - Jabatan </th>
-                                            <th scope="col" v-for="kr in kriteria"
-                                                class="px-1 py-2 text-left text-xs leading-6 font-semibold text-gray-900 capitalize">
-                                                {{ kr.nama }} </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-300 ">
-                                        <tr class="bg-white transition-all duration-500 hover:bg-gray-50"
-                                            v-for="(item, index) in alternatif">
-                                            <td
-                                                class="px-1 py-2 whitespace-nowrap text-xs leading-6 font-medium text-gray-900 ">
-                                                {{ item.staff.nama }}
+                                <table>
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-1 py-2 text-left text-xs leading-6 font-semibold text-gray-900 capitalize rounded-t-xl">
+                                            Nama Karyawan </th>
+                                        <td scope="col"
+                                            class="px-1 py-2 text-left text-xs leading-6 text-gray-900 capitalize">
+                                            : {{ alternatif.staff.nama }} </td>
 
-                                            </td>
-                                            <td
-                                                class="px-1 py-2 whitespace-nowrap text-xs leading-6 font-medium text-gray-900">
-                                                {{ item.staff.departement.nama }} - {{ item.staff.jabatan }} </td>
-
-                                            <td v-for="(col, idx) in kriteria"
-                                                class="p-1 whitespace-nowrap text-xs leading-6 font-medium text-gray-900">
-                                                <select :name="col.nama" :id="col.nama" required
-                                                    @change="BobotPenilaian(index, idx, $event)"
-                                                    class="px-1 py-1 md:py-2 placeholder-gray-400 border focus:outline-none sm:text-sm border-gray-200 shadow-sm rounded-lg focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none ">
-                                                    <option value="">-----</option>
-                                                    <template v-if="col.subkriteria.length > 0">
-                                                        <option v-for="sub in col.subkriteria" :value="sub.bobot">{{
-                                                            sub.nama }}
-                                                        </option>
-                                                    </template>
-                                                    <template v-else>
-                                                        <option value="1">Tidak Memuaskan</option>
-                                                        <option value="2">Kurang Memuaskan</option>
-                                                        <option value="3">Memenuhi Harapan</option>
-                                                        <option value="4">Melebihi Harapan</option>
-                                                        <option value="5">Luar Biasa--</option>
-                                                    </template>
-
-                                                </select>
-                                            </td>
-
-                                        </tr>
-                                    </tbody>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-1 py-2 text-left text-xs leading-6 font-semibold text-gray-900 capitalize">
+                                            Departement - Jabatan </th>
+                                        <td scope="col"
+                                            class="px-1 py-2 text-left text-xs leading-6 text-gray-900 capitalize">
+                                            : {{ alternatif.staff.departement.nama }} </td>
+                                    </tr>
                                 </table>
+
+
+                                <!-- <div class="flex w-full rounded-md shadow-sm" role="group">
+
+                                    <button type="button" v-for="item in aspek"
+                                        class="inline-flex w-2/6 items-center px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 hover:bg-secondary hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-secondary focus:text-white transition-all">
+                                        <svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2" />
+                                        </svg>
+                                        {{ item.nama }}
+                                    </button>
+                                </div> -->
                             </div>
+
+                            <table class="table w-full border rounded-md">
+                                <caption>Tabel Penilaian</caption>
+                                <thead>
+                                    <th scope="col"
+                                        class="px-1 py-2 border text-left text-xs leading-6 font-semibold text-gray-900 capitalize">
+                                        Nama Kriteria </th>
+                                    <th scope="col" v-for="num in 5"
+                                        class="px-1 py-2 border text-center text-xs leading-6 font-semibold text-gray-900 capitalize">
+                                        {{ num }} </th>
+                                </thead>
+                                <tbody v-for="(item, index) in aspek">
+                                    <tr>
+                                        <td colspan="6" scope="col"
+                                            class="px-1 py-2 bg-primary text-left text-sm leading-6 font-semibold text-white capitalize rounded-t-xl border pl-6">
+                                            Aspek {{ item.nama }} </td>
+                                    </tr>
+                                    <tr v-for="(col,idx) in item.kriteriapenilaian">
+                                        <td scope="col"
+                                            class="px-1 py-2 text-left text-xs leading-6 font-normal text-gray-900 capitalize rounded-t-xl border">
+                                            {{ col.nama }} </td>
+                                        <td scope="col" v-for="num in 5"
+                                            class="px-1 py-2 text-left text-xs leading-6 font-semibold text-gray-900 capitalize rounded-t-xl border">
+                                            <div class="flex justify-center">
+                                                <input :id="'radio' + index +'-' + idx" v-model="Penilaian_karyawan[index].kriteria[idx]" type="radio" :value="num"
+                                                    :name="'radio' + index +'-' + idx"
+                                                    class="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 " required>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <PrimaryButton type="submit" class="w-full mt-5">
                             <span class="w-full text-center">Simpan</span>

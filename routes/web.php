@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified', 'role:Kepala Bagian|Kepala Sekretariat|St
     Route::group(['prefix' => 'penilaian', 'as' => "Penilaian."], function () {
         Route::controller(PenilaianController::class)->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::get('/list-data/karyawan', 'listkaryawan')->name('karyawan');
             Route::get('/tambah-data/penilaian', 'create')->name('create');
             Route::get('/edit-data/penilaian', 'edit')->name('edit');
             Route::get('/detail-data/penilaian', 'show')->name('show');
