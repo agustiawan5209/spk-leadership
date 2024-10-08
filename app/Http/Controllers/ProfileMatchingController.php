@@ -45,38 +45,38 @@ class ProfileMatchingController extends Controller
      * $result = $this->resultRank($mtx);
      * print_r($result);
      */
-   public function resultRank()
-{
-    $result = [];
+    public function resultRank()
+    {
+        $result = [];
 
-    foreach ($this->matirx_hasil as $key => $value) {
-        // Memecah key berdasarkan tanda "-"
-        list($firstPart, $secondPart) = explode("-", $key);
+        foreach ($this->matirx_hasil as $key => $value) {
+            // Memecah key berdasarkan tanda "-"
+            list($firstPart, $secondPart) = explode("-", $key);
 
-        // Jika key pertama sudah ada di result, tambahkan nilai, jika tidak, inisialisasi
-        if (isset($result[$firstPart])) {
-            $result[$firstPart][$key] = $value;
-        } else {
-            $result[$firstPart][$key] = $value;
+            // Jika key pertama sudah ada di result, tambahkan nilai, jika tidak, inisialisasi
+            if (isset($result[$firstPart])) {
+                $result[$firstPart][$key] = $value;
+            } else {
+                $result[$firstPart][$key] = $value;
+            }
         }
+
+        $rank = [];
+        foreach ($result as $key => $value) {
+            $staff = Staff::with(['departement'])->findOrFail($key);
+            $rank[$key] = [
+                'staff' => $staff,
+                'hasil' => array_sum($value) / count($value),
+            ];
+        }
+
+        // Sort the results in ascending order (smaller values are better)
+        uasort($rank, function ($a, $b) {
+            return $a['hasil'] <= $b['hasil'];
+        });
+
+        return array_values($rank);
     }
-
-    $rank = [];
-    foreach ($result as $key => $value) {
-        $staff = Staff::with(['departement'])->findOrFail($key);
-        $rank[$key] = [
-            'staff' => $staff,
-            'hasil' => array_sum($value) / count($value),
-        ];
-    }
-
-    // Sort the results in ascending order (smaller values are better)
-    uasort($rank, function($a, $b) {
-        return $a['hasil'] <= $b['hasil'];
-    });
-
-    return array_values($rank);
-}
 
     /**
      * Fungsi untuk mendapatkan matriks penilaian karyawan
@@ -97,7 +97,7 @@ class ProfileMatchingController extends Controller
         $matrix_penilaian = [];
         $matrix_factory = [];
         $matrix_total = [];
-        if($penilaian->count() > 0) {
+        if ($penilaian->count() > 0) {
             foreach ($penilaian as $key => $value) {
                 // Cek Jika data penilaian ada
 
@@ -105,7 +105,7 @@ class ProfileMatchingController extends Controller
                     // Membuat Key untuk matrix
                     // Id Dari Staff dan ID dari staff penilai
                     $key_id = $value->staff_id . '-' . $value->staff_penilai_id;
-                    $Key_karyawan = $value->staff['nama'] . '-'. $value->staff_penilai_id;
+                    $Key_karyawan = $value->staff['nama'] . '-' . $value->staff_penilai_id;
 
                     // Profile Ideal
                     $ProfileIdeal = $this->getProfileIdeal();
@@ -158,17 +158,17 @@ class ProfileMatchingController extends Controller
                 }
             }
         }
-        uasort($matrix_total, function($a, $b) {
+        uasort($matrix_total, function ($a, $b) {
             return $a <= $b;
         });
         $this->matirx_hasil = $matrix;
         return [
             'rank' => $this->resultRank(),
             'nilai_total' => $matrix,
-            'hitung_selisih'=> $matrix_selisih,
-            'matrix_penilaian'=> $matrix_penilaian,
-            'matrix_factory'=> $matrix_factory,
-            'matrix_total'=> $matrix_total,
+            'hitung_selisih' => $matrix_selisih,
+            'matrix_penilaian' => $matrix_penilaian,
+            'matrix_factory' => $matrix_factory,
+            'matrix_total' => $matrix_total,
         ];
     }
 

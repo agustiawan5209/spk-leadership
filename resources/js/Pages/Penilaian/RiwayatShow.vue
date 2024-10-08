@@ -1,4 +1,5 @@
 <script setup>
+// Importing components and utilities from other files
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, usePage, Link } from '@inertiajs/vue3';
 import { ref, defineProps, watch, onMounted, inject } from 'vue';
@@ -7,10 +8,18 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/Modal.vue';
 import PutusanForm from './PutusanForm.vue';
 import Hasil from './Hasil.vue';
+import Ranking from './Ranking.vue';
 import LoadingSpinner from '@/Components/LoadingSpinner.vue';
+
+// Getting the current page object
 const page = usePage();
+
+// Injecting the Swal library
 const swal = inject('$swal');
+
+// Running a function when the component is mounted
 onMounted(() => {
+    // If there's a message in the page props, show a success alert
     if (page.props.message !== null) {
         swal({
             icon: "success",
@@ -21,47 +30,59 @@ onMounted(() => {
         });
     }
 })
+
+// Defining props for this component
 const props = defineProps({
     kategori: {
         type: Object,
-        default: () => ({})
+        default: () => ({}) // Default value is an empty object
     },
     penilaian: {
         type: Object,
-        default: () => ({})
+        default: () => ({}) // Default value is an empty object
     },
     hasilpenilaian: {
         type: Object,
-        default: () => ({})
+        default: () => ({}) // Default value is an empty object
     },
     aspek: {
         type: Object,
-        default: () => ({})
+        default: () => ({}) // Default value is an empty object
     },
     aspekkriteria: {
         type: Object,
-        default: () => ({})
+        default: () => ({}) // Default value is an empty object
+    },
+    alternatif: {
+        type: Object,
+        default: () => ({}) // Default value is an empty object
     },
     perhitungan: {
         type: Object,
-        default: () => ({})
+        default: () => ({}) // Default value is an empty object
     },
     keputusan: {
         type: Object,
-        default: () => ({})
+        default: () => ({}) // Default value is an empty object
+    },
+    ranking: {
+        type: Object,
+        default: () => ({}) // Default value is an empty object
     },
     can: {
         type: Object,
-        default: () => ({})
+        default: () => ({}) // Default value is an empty object
     },
     rank: {
-        type: [Array, Object], // Mendukung Array atau Object, tergantung pengiriman data
-        default: () => ([]), // Default adalah array kosong
+        type: [Array, Object], // Can be either an array or an object
+        default: () => ([]) // Default value is an empty array
     },
 })
 
+// Creating a new array from the kategori.penilaian prop
 const dataPenilai = [...props.kategori.penilaian];
 
+// Function to count the occurrences of each staff_penilai_id in an array
 function findSameItem(array) {
     const count = {};
 
@@ -75,17 +96,20 @@ function findSameItem(array) {
 
     return count;
 }
+
+// Creating a new array from the rank prop, handling both array and object cases
 let Rank = [];
 if (Array.isArray(props.rank)) {
-    Rank = [...props.rank]; // Spread operator digunakan untuk membuat salinan array
+    Rank = [...props.rank]; // Spread operator to create a copy of the array
 } else if (typeof props.rank === 'object') {
-    // Jika props.rank adalah objek, kamu bisa mengonversinya menjadi array
+    // If props.rank is an object, convert it to an array
     Rank = Object.values(props.rank);
 }
 
-const HasilRank = Rank.sort((a, b) => a.hasil - b.hasil); // Urutkan array berdasarkan properti 'hasil'
+// Sorting the Rank array by the 'hasil' property
+const HasilRank = Rank.sort((a, b) => a.hasil - b.hasil);
 
-// Caridata yang memiliki nilai yang sama
+// Function to get the count of unique staff_penilai_id in an array
 function uniqueField(array) {
     const seen = new Set();
     const result = [];
@@ -100,27 +124,39 @@ function uniqueField(array) {
     return result.length;
 }
 
+// Getting the count of unique penilai
 const Penilai = uniqueField(dataPenilai);
 
+// Creating a reactive reference for the current tab
 const tabAction = ref(2);
-const tabActive = 'inline-block w-full p-4 text-gray-900 bg-gray-100 border-r border-gray-200 rounded-lg focus:ring-4 focus:ring-blue-300 active focus:outline-none';
+
+// Defining classes for active and non-active tabs
+const tabActive = 'inline-block w-full p-4 text-gray-900 bg-gray-100 border-r border-gray -200 rounded-lg focus:ring-4 focus:ring-blue-300 active focus:outline-none';
 const tabNonActive = 'inline-block w-full p-4 bg-white border-r border-gray-200 hover:text-gray-700 hover:bg-gray-50 focus:ring-4 focus:ring-blue-300 focus:outline-none';
 
-
+// Creating a reactive reference for the putusan modal
 const varPutusan = ref(false);
+
+// Function to toggle the putusan modal
 function showPutusan() {
     varPutusan.value = !varPutusan.value
 }
 
+// Function to close the putusan modal
 const handleClose = () => {
-    varPutusan.value = false; // Emit event untuk memberitahu parent agar modal ditutup
+    varPutusan.value = false; // Emit event to close the modal
 };
 
+// Creating a form instance for the aspek
 const FormAspek = useForm({
     slug: props.kategori.id,
     aspek: props.aspek.id,
 })
+
+// Creating a reactive reference for the aspek slug
 const AspekSlug = ref(props.aspek.id);
+
+// Watching the AspekSlug reference and updating the form when it changes
 watch(AspekSlug, (value) => {
     FormAspek.aspek = value;
     FormAspek.get(route('admin.riwayat.show'), {
@@ -135,9 +171,9 @@ watch(AspekSlug, (value) => {
     })
 })
 
+// Creating a reactive reference for the page spinner
 const spinnerPage = ref(false);
 </script>
-
 <template>
     <LoadingSpinner v-if="spinnerPage" />
 
@@ -215,6 +251,9 @@ const spinnerPage = ref(false);
                                     <li class="w-full focus-within:z-10" @click="tabAction = 2">
                                         <a href="#" :class="tabAction == 2 ? tabActive : tabNonActive">Hasil</a>
                                     </li>
+                                    <li class="w-full focus-within:z-10" @click="tabAction = 3">
+                                        <a href="#" :class="tabAction == 3 ? tabActive : tabNonActive">Ranking</a>
+                                    </li>
                                 </ul>
 
                             </div>
@@ -275,7 +314,10 @@ const spinnerPage = ref(false);
                                     <Perhitungan :perhitungan="perhitungan" :aspek="aspek" />
                                 </div>
                                 <div class="col-span-full overflow-x-auto mt-3" v-if="tabAction == 2">
-                                    <Hasil :hasil="hasilpenilaian" :aspek="aspekkriteria"/>
+                                    <Hasil :hasil="hasilpenilaian" :aspek="aspekkriteria" :alternatif="alternatif" />
+                                </div>
+                                <div class="col-span-full overflow-x-auto mt-3" v-if="tabAction == 3">
+                                    <Ranking :rank="ranking" />
                                 </div>
                             </transition-group>
                         </div>

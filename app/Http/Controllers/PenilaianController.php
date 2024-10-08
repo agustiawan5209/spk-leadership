@@ -69,7 +69,7 @@ class PenilaianController extends Controller
             ->where('id', Request::input('alternatif'))
             ->first();
 
-            // dd($alternatif);
+        // dd($alternatif);
         return Inertia::render('Penilaian/Form', [
             'alternatif' => $alternatif,
             'aspek' => AspekKriteria::with(['kriteriapenilaian'])->get(),
@@ -82,7 +82,8 @@ class PenilaianController extends Controller
         ]);
     }
 
-    public function listkaryawan(){
+    public function listkaryawan()
+    {
         $valid = Validator::make(Request::all(), [
             'kategori' => 'required|exists:kategori_penilaians,id',
             // 'aspek' => 'required|exists:aspek_kriterias,id',
@@ -106,8 +107,8 @@ class PenilaianController extends Controller
             'aspek' => AspekKriteria::with(['kriteriapenilaian'])->get(),
             'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'alternatif.staff.departement'])
                 ->find(Request::input('kategori')),
-            'penilaian'=> Penilaian::where('staff_penilai_id', Auth::user()->staff->id)->get(),
-            'staffpenilai'=> Auth::user()->staff,
+            'penilaian' => Penilaian::where('staff_penilai_id', Auth::user()->staff->id)->get(),
+            'staffpenilai' => Auth::user()->staff,
         ]);
     }
 
@@ -151,10 +152,9 @@ class PenilaianController extends Controller
                     'nilai' => $nilai[$z],
                 ]);
             }
-
         }
 
-        return redirect()->route('Penilaian.karyawan', ['kategori'=> $kategori->id])->with('message', 'Penialaian Berhasil Di Buat');
+        return redirect()->route('Penilaian.karyawan', ['kategori' => $kategori->id])->with('message', 'Penialaian Berhasil Di Buat');
     }
 
     /**
@@ -214,10 +214,10 @@ class PenilaianController extends Controller
         $kategori_id = Request::input('slug');
 
 
-        if(Request::exists('aspek')){
+        if (Request::exists('aspek')) {
             $aspek_id = Request::input('aspek');
-        }else{
-            $aspek_id = AspekKriteria::orderBy('id','asc')->first()->id;
+        } else {
+            $aspek_id = AspekKriteria::orderBy('id', 'asc')->first()->id;
         }
         $profileMatching = new ProfileMatchingController($kategori_id, $aspek_id);
         $mtx = $profileMatching->matrixPenilai();
@@ -227,20 +227,27 @@ class PenilaianController extends Controller
         // Nilai Total
         $aspekkriteria = AspekKriteria::all();
         $result = [];
-        foreach($aspekkriteria as $key => $value) {
+        foreach ($aspekkriteria as $key => $value) {
             $PM = new ProfileMatchingController($kategori_id, $value->id);
             $PM->matrixPenilai();
             $result[$value->nama] = $PM->resultRank();
         }
+        $ranking = $this->rankingAll($result, $aspekkriteria);
+
+        $alternatif = Alternatif::with(['staff', 'staff.departement'])
+        ->where('kategori_id', $kategori_id)
+        ->get();
         return Inertia::render('Penilaian/RiwayatShow', [
             'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'penilaian'])->find($kategori_id),
             'penilaian' => Penilaian::with(['datapenilaian'])->where('kategori_id', $kategori_id)->get(),
             'perhitungan' => $mtx,
             'rank' => $rank,
+            'alternatif' => $alternatif,
             'aspek' => AspekKriteria::with(['kriteriapenilaian'])->find($aspek_id),
-            'aspekkriteria'=> $aspekkriteria,
-            'keputusan'=> Keputusan::with(['karyawan', 'kategoripenilaian'])->where('kategori_id', '=', $kategori_id)->get(),
-            'hasilpenilaian'=> $result,
+            'aspekkriteria' => $aspekkriteria,
+            'keputusan' => Keputusan::with(['karyawan', 'kategoripenilaian'])->where('kategori_id', '=', $kategori_id)->get(),
+            'hasilpenilaian' => $result,
+            'ranking' => $ranking,
             'can' => [
                 'add' => Auth::user()->can('add penilaian'),
                 'edit' => Auth::user()->can('edit penilaian'),
@@ -249,4 +256,45 @@ class PenilaianController extends Controller
             ]
         ]);
     }
+    public function rankingAll($result, $aspek)
+    {
+        $karyawan = [];
+        $ranking = [];
+
+        // Loop melalui setiap aspek
+        foreach ($aspek as $key => $value) {
+            foreach ($result[$value->nama] as $k => $v) {
+                // Mengumpulkan data karyawan dengan hasil yang dihitung berdasarkan persentase aspek
+                $karyawan[$value->nama][$k] = [
+                    'data' => $v['staff'],  // Simpan data staff (misalnya ID atau objek lainnya)
+                    'staff' => $v['staff']['nama'],  // Nama karyawan
+                    'hasil' => ($value->persentase / 100) * $v['hasil']  // Menghitung hasil berdasarkan persentase aspek
+                ];
+            }
+        }
+
+        // Menggabungkan nilai-nilai karyawan dari setiap aspek
+        foreach ($karyawan as $aspek => $nilai_aspek) {
+            foreach ($nilai_aspek as $nilai) {
+                $nama_staff = $nilai['staff'];
+                $hasil = $nilai['hasil'];
+
+                // Jika staff belum ada di array ranking, tambahkan dengan hasil 0
+                if (!isset($ranking[$nama_staff]['hasil'])) {
+                    $ranking[$nama_staff]['hasil'] = 0;
+                }
+
+                // Tambahkan nilai hasil ke total nilai staff
+                $ranking[$nama_staff]['hasil'] += $hasil;
+                $ranking[$nama_staff]['data'] = $nilai['data'];
+            }
+        }
+
+        // Urutkan berdasarkan nilai 'hasil' dari terbesar ke terkecil
+        usort($ranking, function ($a, $b) {
+            return $b['hasil'] <=> $a['hasil'];
+        });
+        return $ranking;
+    }
+
 }
