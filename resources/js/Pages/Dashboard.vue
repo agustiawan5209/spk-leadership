@@ -43,8 +43,8 @@ const props = defineProps({
                         <div class="col-span-full p-3 flex justify-center items-center relative">
                             <div class="text-lg font-semibold text-center">
                                 <span class="text-green-700 md:text-4xl">SISTEM PENDUKUNG KEPUTUSAN</span> <br>
-                                <span class="md:text-xl">PUNISMENT/REWARD MENGGUNAKAN METODE</span>
-                                PROFILE MATCHING<span class="text-red-600 text-2xl"> <br> DI BAWASLU KELOLA JASA ARTHA</span>
+                                <span class="md:text-xl">PENENTUAN LEADERSHIP DIVISI OPERASIONAL PADA  MENGGUNAKAN METODE</span>
+                                PROFILE MATCHING<span class="text-red-600 text-2xl"> <br> DI  KELOLA JASA ARTHA</span>
                             </div>
                         </div>
                     </div>
