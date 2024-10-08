@@ -6,6 +6,8 @@ const props = defineProps(['perhitungan', 'aspek'])
 function hitungNilaiTotal(core, secondary, cf, sf) {
     return `((${core} / 100) * ${cf}) + ((${secondary} / 100) * ${sf})`;
 }
+
+console.log(props.aspek)
 </script>
 
 <template>

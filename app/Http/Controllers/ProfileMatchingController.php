@@ -16,15 +16,17 @@ class ProfileMatchingController extends Controller
 {
     private $kategori_id;
     private $matirx_hasil;
+    private $aspek_id;
 
     /**
      * Konstruktor untuk menginisialisasi kategori ID
      *
      * @param int $kategori_id
      */
-    public function __construct($kategori_id)
+    public function __construct($kategori_id, $aspek_id)
     {
         $this->kategori_id = $kategori_id;
+        $this->aspek_id = $aspek_id;
     }
 
     /**
@@ -43,33 +45,38 @@ class ProfileMatchingController extends Controller
      * $result = $this->resultRank($mtx);
      * print_r($result);
      */
-    public function resultRank()
-    {
-        $result = [];
+   public function resultRank()
+{
+    $result = [];
 
-        foreach ($this->matirx_hasil as $key => $value) {
-            // Memecah key berdasarkan tanda "-"
-            list($firstPart, $secondPart) = explode("-", $key);
+    foreach ($this->matirx_hasil as $key => $value) {
+        // Memecah key berdasarkan tanda "-"
+        list($firstPart, $secondPart) = explode("-", $key);
 
-            // Jika key pertama sudah ada di result, tambahkan nilai, jika tidak, inisialisasi
-            if (isset($result[$firstPart])) {
-                $result[$firstPart][$key] = $value;
-            } else {
-                $result[$firstPart][$key] = $value;
-            }
+        // Jika key pertama sudah ada di result, tambahkan nilai, jika tidak, inisialisasi
+        if (isset($result[$firstPart])) {
+            $result[$firstPart][$key] = $value;
+        } else {
+            $result[$firstPart][$key] = $value;
         }
-
-        $rank = [];
-        foreach ($result as $key => $value) {
-            $staff = Staff::with(['departement'])->findOrFail($key);
-            $rank[$key] = [
-                'staff' => $staff,
-                'hasil' => array_sum($value) / count($value),
-            ];
-        }
-
-        return $rank;
     }
+
+    $rank = [];
+    foreach ($result as $key => $value) {
+        $staff = Staff::with(['departement'])->findOrFail($key);
+        $rank[$key] = [
+            'staff' => $staff,
+            'hasil' => array_sum($value) / count($value),
+        ];
+    }
+
+    // Sort the results in ascending order (smaller values are better)
+    uasort($rank, function($a, $b) {
+        return $a['hasil'] <= $b['hasil'];
+    });
+
+    return array_values($rank);
+}
 
     /**
      * Fungsi untuk mendapatkan matriks penilaian karyawan
@@ -82,7 +89,7 @@ class ProfileMatchingController extends Controller
      */
     public function matrixPenilai()
     {
-        $penilaian = Penilaian::with(['datapenilaian'])->where('kategori_id', $this->kategori_id)->get();
+        $penilaian = Penilaian::with(['datapenilaian'])->where('aspek_id', $this->aspek_id)->where('kategori_id', $this->kategori_id)->get();
 
         $matrix = [];
 
@@ -101,13 +108,13 @@ class ProfileMatchingController extends Controller
                     $Key_karyawan = $value->staff['nama'] . '-'. $value->staff_penilai_id;
 
                     // Profile Ideal
-                    $ProfileIdeal = $this->getProfileIdeal($value->aspek_id);
+                    $ProfileIdeal = $this->getProfileIdeal();
                     // Factory Core
-                    $factory_core = $this->getFactoryCore($value->aspek_id);
+                    $factory_core = $this->getFactoryCore();
                     // Factory Secondary
-                    $factory_secondary = $this->getFactorySecondary($value->aspek_id);
+                    $factory_secondary = $this->getFactorySecondary();
                     // Aspek Kriteria
-                    $aspek = $this->getAspek($value->aspek_id);
+                    $aspek = $this->getAspek();
 
                     //Masukkan Nilai Bobot ke dalam matrix;
                     $matrix[$key_id] = [];
@@ -151,6 +158,9 @@ class ProfileMatchingController extends Controller
                 }
             }
         }
+        uasort($matrix_total, function($a, $b) {
+            return $a <= $b;
+        });
         $this->matirx_hasil = $matrix;
         return [
             'rank' => $this->resultRank(),
@@ -172,9 +182,9 @@ class ProfileMatchingController extends Controller
      * $factory_core = $this->getFactoryCore(1);
      * echo $factory_core;
      */
-    public function getFactoryCore($aspek_id)
+    public function getFactoryCore()
     {
-        $factory = AspekKriteria::find($aspek_id);
+        $factory = AspekKriteria::find($this->aspek_id);
 
         return $factory->core_factory;
     }
@@ -189,9 +199,9 @@ class ProfileMatchingController extends Controller
      * $factory_secondary = $this->getFactorySecondary(1);
      * echo $factory_secondary;
      */
-    public function getFactorySecondary($aspek_id)
+    public function getFactorySecondary()
     {
-        $factory = AspekKriteria::find($aspek_id);
+        $factory = AspekKriteria::find($this->aspek_id);
 
         return $factory->secondary_factory;
     }
@@ -206,9 +216,9 @@ class ProfileMatchingController extends Controller
      * $aspek = $this->getAspek(1);
      * print_r($aspek);
      */
-    public function getAspek($aspek_id)
+    public function getAspek()
     {
-        $aspek = AspekKriteria::with(['kriteriapenilaian'])->find($aspek_id);
+        $aspek = AspekKriteria::with(['kriteriapenilaian'])->find($this->aspek_id);
         return $aspek;
     }
 
@@ -222,9 +232,9 @@ class ProfileMatchingController extends Controller
      * $profile_ideal = $this->getProfileIdeal(1);
      * print_r($profile_ideal);
      */
-    public function getProfileIdeal($aspek_id)
+    public function getProfileIdeal()
     {
-        $aspek = AspekKriteria::with(['kriteriapenilaian'])->find($aspek_id);
+        $aspek = AspekKriteria::with(['kriteriapenilaian'])->find($this->aspek_id);
         $kriteria = $aspek->kriteriapenilaian;
         $ProfileIdeal = [];
         foreach ($kriteria as $key => $value) {

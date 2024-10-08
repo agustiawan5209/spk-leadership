@@ -62,7 +62,7 @@ const isOpenDropdown = (menu) => openDropdown.value.includes(menu);
                 :active="route().current('Putusan.index')"
                 :icon="['fas', 'circle-info']">
 
-                <span class="-mr-1 font-medium">Punishment/Reward</span>
+                <span class="-mr-1 font-medium">Hasil Evaluasi</span>
             </NavLink>
         </li>
     </ul>

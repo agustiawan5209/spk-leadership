@@ -212,16 +212,35 @@ class PenilaianController extends Controller
     public function riwayat_show()
     {
         $kategori_id = Request::input('slug');
-        $profileMatching = new ProfileMatchingController($kategori_id);
+
+
+        if(Request::exists('aspek')){
+            $aspek_id = Request::input('aspek');
+        }else{
+            $aspek_id = AspekKriteria::orderBy('id','asc')->first()->id;
+        }
+        $profileMatching = new ProfileMatchingController($kategori_id, $aspek_id);
         $mtx = $profileMatching->matrixPenilai();
         $rank = $profileMatching->resultRank();
+
+
+        // Nilai Total
+        $aspekkriteria = AspekKriteria::all();
+        $result = [];
+        foreach($aspekkriteria as $key => $value) {
+            $PM = new ProfileMatchingController($kategori_id, $value->id);
+            $PM->matrixPenilai();
+            $result[$value->nama] = $PM->resultRank();
+        }
         return Inertia::render('Penilaian/RiwayatShow', [
-            'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'penilaian'])->find(Request::input('slug')),
-            'penilaian' => Penilaian::with(['datapenilaian'])->where('kategori_id', Request::input('slug'))->get(),
+            'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'penilaian'])->find($kategori_id),
+            'penilaian' => Penilaian::with(['datapenilaian'])->where('kategori_id', $kategori_id)->get(),
             'perhitungan' => $mtx,
             'rank' => $rank,
-            'aspek' => AspekKriteria::with(['kriteriapenilaian'])->find(1),
+            'aspek' => AspekKriteria::with(['kriteriapenilaian'])->find($aspek_id),
+            'aspekkriteria'=> $aspekkriteria,
             'keputusan'=> Keputusan::with(['karyawan', 'kategoripenilaian'])->where('kategori_id', '=', $kategori_id)->get(),
+            'hasilpenilaian'=> $result,
             'can' => [
                 'add' => Auth::user()->can('add penilaian'),
                 'edit' => Auth::user()->can('edit penilaian'),

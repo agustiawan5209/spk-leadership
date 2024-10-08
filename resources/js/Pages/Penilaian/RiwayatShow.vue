@@ -6,6 +6,8 @@ import Perhitungan from './Perhitungan.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/Modal.vue';
 import PutusanForm from './PutusanForm.vue';
+import Hasil from './Hasil.vue';
+import LoadingSpinner from '@/Components/LoadingSpinner.vue';
 const page = usePage();
 const swal = inject('$swal');
 onMounted(() => {
@@ -28,7 +30,15 @@ const props = defineProps({
         type: Object,
         default: () => ({})
     },
+    hasilpenilaian: {
+        type: Object,
+        default: () => ({})
+    },
     aspek: {
+        type: Object,
+        default: () => ({})
+    },
+    aspekkriteria: {
         type: Object,
         default: () => ({})
     },
@@ -40,11 +50,16 @@ const props = defineProps({
         type: Object,
         default: () => ({})
     },
+    can: {
+        type: Object,
+        default: () => ({})
+    },
     rank: {
         type: [Array, Object], // Mendukung Array atau Object, tergantung pengiriman data
         default: () => ([]), // Default adalah array kosong
     },
 })
+
 const dataPenilai = [...props.kategori.penilaian];
 
 function findSameItem(array) {
@@ -87,7 +102,7 @@ function uniqueField(array) {
 
 const Penilai = uniqueField(dataPenilai);
 
-const tabAction = ref(3);
+const tabAction = ref(2);
 const tabActive = 'inline-block w-full p-4 text-gray-900 bg-gray-100 border-r border-gray-200 rounded-lg focus:ring-4 focus:ring-blue-300 active focus:outline-none';
 const tabNonActive = 'inline-block w-full p-4 bg-white border-r border-gray-200 hover:text-gray-700 hover:bg-gray-50 focus:ring-4 focus:ring-blue-300 focus:outline-none';
 
@@ -100,9 +115,31 @@ function showPutusan() {
 const handleClose = () => {
     varPutusan.value = false; // Emit event untuk memberitahu parent agar modal ditutup
 };
+
+const FormAspek = useForm({
+    slug: props.kategori.id,
+    aspek: props.aspek.id,
+})
+const AspekSlug = ref(props.aspek.id);
+watch(AspekSlug, (value) => {
+    FormAspek.aspek = value;
+    FormAspek.get(route('admin.riwayat.show'), {
+        preserveScroll: true,
+        preserveState: true,
+        onBefore: () => {
+            spinnerPage.value = true;
+        },
+        onFinish: () => {
+            spinnerPage.value = false
+        }
+    })
+})
+
+const spinnerPage = ref(false);
 </script>
 
 <template>
+    <LoadingSpinner v-if="spinnerPage" />
 
     <Head title="Riwayat Penilaian" />
 
@@ -115,7 +152,8 @@ const handleClose = () => {
             <section class=" py-2 px-0 md:px-6  md:py-6 bg-primary text-dark">
                 <form novalidate="" action="" class="container flex flex-col mx-auto space-y-12">
                     <fieldset class="grid grid-cols-3 gap-6 p-6 rounded-md shadow-sm bg-gray-50">
-                        <div class="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+                        <div class="grid grid-cols-3 gap-4 col-span-full ">
+                            <!-- Detail Evaluasi -->
                             <div class="col-span-full sm:col-span-3 ">
                                 <ul class="flex flex-col space-y-20">
                                     <li class="flex gap-3 py-2 border-b">
@@ -132,20 +170,27 @@ const handleClose = () => {
                                         <td class="text-sm border-b py-2 font-bold">Jadwal Penilaian</td>
                                         <td class="text-sm border-b text-gray-900">: {{ kategori.tanggal }} </td>
                                     </tr>
+
+                                    <tr class="">
+                                        <td class="text-sm border-b py-2 font-bold">Jumlah Penilaian Yang Masuk </td>
+                                        <td class="text-sm border-b text-gray-900">: {{ Penilai }}
+                                        </td>
+                                    </tr>
+                                    <tr class="">
+                                        <td class="text-sm border-b py-2 font-bold">Status Penilaian </td>
+                                        <td class="text-sm border-b text-gray-900"> :{{ kategori.status }}
+                                        </td>
+                                    </tr>
                                     <tr class="">
                                         <td class="text-sm border-b py-2 font-bold">Keterangan :</td>
                                         <td class="text-sm border-b text-gray-900" v-html="kategori.keterangan">
                                         </td>
                                     </tr>
-                                    <tr class="">
-                                        <td class="text-sm border-b py-2 font-bold">Jumlah Penilaian Yang Masuk :</td>
-                                        <td class="text-sm border-b text-gray-900"> {{ Penilai }}
-                                        </td>
-                                    </tr>
                                 </table>
                             </div>
+                            <!-- End Detail Evaluasi -->
 
-
+                            <!-- Tab Action 1 -->
                             <div class="col-span-full sm:col-span-3">
                                 <div class="sm:hidden">
                                     <label for="tabs" class="sr-only">------</label>
@@ -170,11 +215,28 @@ const handleClose = () => {
                                     <li class="w-full focus-within:z-10" @click="tabAction = 2">
                                         <a href="#" :class="tabAction == 2 ? tabActive : tabNonActive">Hasil</a>
                                     </li>
-                                    <li class="w-full focus-within:z-10" @click="tabAction = 3">
-                                        <a href="#" :class="tabAction == 3 ? tabActive : tabNonActive">Putusan</a>
-                                    </li>
                                 </ul>
 
+                            </div>
+                            <!-- Tab ACtion 1 -->
+
+
+                            <div class="col-span-full sm:col-span-3" v-if="tabAction == 1">
+                                <div class="flex w-full rounded-md shadow-sm" role="group">
+
+                                    <template v-for="item in aspekkriteria">
+                                        <button type="button" @click="AspekSlug = item.id"
+                                            class="inline-flex w-2/6 items-center px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-900 hover:bg-secondary hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-secondary focus:text-white transition-all">
+                                            <svg class="w-3 h-3 me-2" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2" />
+                                            </svg>
+                                            {{ item.nama }}
+                                        </button>
+                                    </template>
+                                </div>
                             </div>
                             <transition-group>
                                 <div class="col-span-full overflow-x-auto mt-3" v-if="tabAction == 0">
@@ -213,104 +275,7 @@ const handleClose = () => {
                                     <Perhitungan :perhitungan="perhitungan" :aspek="aspek" />
                                 </div>
                                 <div class="col-span-full overflow-x-auto mt-3" v-if="tabAction == 2">
-                                    <table class="w-full text-xs text-left rtl:text-right text-gray-500">
-                                        <thead class="text-xs text-white uppercase bg-primary ">
-                                            <tr>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Departement
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Nama Karyawan
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Jabatan
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Point
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="bg-white border-b" v-for="(item, index) in HasilRank"
-                                                :key="index">
-                                                <th scope="row"
-                                                    class="px-6 py-4 font-medium text-sm capitalize text-gray-900 whitespace-nowrap">
-                                                    {{ item.staff.nama_departement }}
-                                                </th>
-                                                <td class="px-6 py-4 text-sm">
-                                                    {{ item.staff.nama }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.staff.jabatan }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.hasil }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-span-full overflow-x-auto mt-3" v-if="tabAction == 3">
-                                    <div class="inline-block" v-if="keputusan.length == 0 && Penilai > 0  && can.add">
-                                        <p class="text-sm text-gray-500">Keterangan : Menyimpan Data Penilaian
-                                            {{ kategori.nama }}
-                                            <br>
-                                            Menyimpan Data Akan menyebabkan penilaian saat ini menjadi non-aktif dan
-                                            karyawan tidak
-                                            dapat membuat penilaian lagi.
-                                        </p>
-                                        <PrimaryButton type="button" class="my-5" @click="showPutusan()">Buat Keputusan
-                                        </PrimaryButton>
-                                    </div>
-                                    <table class="w-full text-xs text-left rtl:text-right text-gray-500">
-                                        <table class="w-full text-xs text-left rtl:text-right text-gray-500">
-                                            <thead class="text-xs text-white uppercase bg-primary ">
-                                                <tr>
-                                                    <th scope="col" class="px-6 py-3">
-                                                        Departement
-                                                    </th>
-                                                    <th scope="col" class="px-6 py-3">
-                                                        Nama Karyawan
-                                                    </th>
-                                                    <th scope="col" class="px-6 py-3">
-                                                        Jabatan
-                                                    </th>
-                                                    <th scope="col" class="px-6 py-3">
-                                                        Point
-                                                    </th>
-                                                    <th scope="col" class="px-6 py-3">
-                                                        Jenis Putusan
-                                                    </th>
-                                                    <th scope="col" class="px-6 py-3">
-                                                        alasan
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="bg-white border-b" v-for="(item, index) in keputusan"
-                                                    :key="index">
-                                                    <th scope="row"
-                                                        class="px-6 py-4 font-medium text-sm capitalize text-gray-900 whitespace-nowrap">
-                                                        {{ item.karyawan.nama_departement }}
-                                                    </th>
-                                                    <td class="px-6 py-4 text-sm">
-                                                        {{ item.karyawan.nama }}
-                                                    </td>
-                                                    <td class="px-6 py-4">
-                                                        {{ item.karyawan.jabatan }}
-                                                    </td>
-                                                    <td class="px-6 py-4">
-                                                        {{ item.point }}
-                                                    </td>
-                                                    <td class="px-6 py-4">
-                                                        {{ item.jenis_putusan }}
-                                                    </td>
-                                                    <td class="px-6 py-4" v-html="item.alasan">
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </table>
+                                    <Hasil :hasil="hasilpenilaian" :aspek="aspekkriteria"/>
                                 </div>
                             </transition-group>
                         </div>

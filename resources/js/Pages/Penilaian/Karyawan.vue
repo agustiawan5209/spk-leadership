@@ -53,7 +53,8 @@ function cekPenilaian(item) {
     for (let i = 0; i < props.penilaian.length; i++) {
         const element = props.penilaian[i];
         // Jika menemukan kecocokan, artinya penilaian sudah ada, maka kembalikan `false`
-        if (item.id === element.staff_id && element.staff_penilai_id === props.staffpenilai.id) {
+        // console.log(item.staff.id , element.staff_id , element.staff_penilai_id , props.staffpenilai.id)
+        if (item.staff.id === element.staff_id && element.staff_penilai_id === props.staffpenilai.id) {
             return false;
         }
     }
@@ -61,7 +62,7 @@ function cekPenilaian(item) {
     return true;
 }
 
-
+// cekPenilaian(props.alternatif[8])
 </script>
 
 <template>
