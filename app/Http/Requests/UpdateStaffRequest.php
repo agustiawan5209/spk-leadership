@@ -26,7 +26,7 @@ class UpdateStaffRequest extends FormRequest
             'name' => 'required|sometimes|string|max:255',
             'no_telpon' => 'required|sometimes|string|max:255',
             'alamat' => 'required|sometimes|string',
-            'jabatan'=> 'required|sometimes|in:Kepala Bagian,Kepala Sekretariat,Staff',
+            'jabatan'=> 'required|sometimes|in:Kepala Bagian,Manager OPS,Staff',
             'departement_id'=> 'required|exists:departements,id',
         ];
     }

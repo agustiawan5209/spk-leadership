@@ -30,7 +30,7 @@ class StoreStaffRequest extends FormRequest
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'string'],
-            'jabatan'=> 'required|in:Kepala Bagian,Kepala Sekretariat,Staff',
+            'jabatan'=> 'required|in:Kepala Bagian,Manager OPS,Staff',
             'departement_id'=> 'required|exists:departements,id',
         ];
     }

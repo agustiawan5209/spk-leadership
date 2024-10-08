@@ -24,7 +24,7 @@ class StaffFactory extends Factory
                 return User::find($attribute['user_id'])->name;
             },
             'departement_id'=> Departement::factory(),
-            // 'jabatan'=> fake()->randomElement(['Kepala Bagian', 'Kepala Sekretariat', 'Staff']),
+            // 'jabatan'=> fake()->randomElement(['Kepala Bagian', 'Manager OPS', 'Staff']),
             'jabatan'=> 'Staff',
             'alamat'=> fake()->address(),
         ];
