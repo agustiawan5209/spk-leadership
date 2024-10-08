@@ -98,12 +98,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //router Penilaian Untuk Kepala Sekeretariat
 Route::middleware(['auth', 'verified', 'role:Manager OPS'])->group(function () {
 
-    Route::group(['prefix' => 'penilaian-karyawan', 'as' => "Sekretariat.penilaian."], function () {
-        Route::controller(SekretariatPenilaianController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/detail-data', 'show')->name('show');
-        });
-    });
+    // Route::group(['prefix' => 'penilaian-karyawan', 'as' => "Sekretariat.penilaian."], function () {
+    //     Route::controller(SekretariatPenilaianController::class)->group(function () {
+    //         Route::get('/', 'index')->name('index');
+    //         Route::get('/detail-data', 'show')->name('show');
+    //     });
+    // });
     Route::group(['prefix' => 'data-karyawan', 'as' => "Sekretariat.staff."], function () {
         Route::controller(SekretariatStaffController::class)->group(function () {
             Route::get('/', 'index')->name('index');

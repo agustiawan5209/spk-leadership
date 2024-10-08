@@ -20,7 +20,7 @@ class PenilaianController extends Controller
         $tableName = 'kategori_penilaians'; // Ganti dengan nama tabel yang Anda inginkan
         $columns = DB::getSchemaBuilder()->getColumnListing($tableName);
 
-        return Inertia::render('Sekretariat/Penilaian/Riwayat', [
+        return Inertia::render('Penilaian/Riwayat', [
             'search' =>  Request::input('search'),
             'table_colums' => array_values(array_diff($columns, ['remember_token', 'posyandus_id', 'password', 'email_verified_at', 'created_at', 'updated_at', 'user_id'])),
             'data' => KategoriPenilaian::with(['alternatif', 'penilaian'])->filter(Request::only('search', 'order'))
@@ -37,20 +37,39 @@ class PenilaianController extends Controller
     public function show()
     {
         $kategori_id = Request::input('slug');
-        $profileMatching = new ProfileMatchingController($kategori_id);
+
+
+        if(Request::exists('aspek')){
+            $aspek_id = Request::input('aspek');
+        }else{
+            $aspek_id = AspekKriteria::orderBy('id','asc')->first()->id;
+        }
+        $profileMatching = new ProfileMatchingController($kategori_id, $aspek_id);
         $mtx = $profileMatching->matrixPenilai();
         $rank = $profileMatching->resultRank();
-        return Inertia::render('Sekretariat/Penilaian/RiwayatShow', [
-            'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'penilaian'])->find(Request::input('slug')),
-            'penilaian' => Penilaian::with(['datapenilaian'])->where('kategori_id', Request::input('slug'))->get(),
+
+
+        // Nilai Total
+        $aspekkriteria = AspekKriteria::all();
+        $result = [];
+        foreach($aspekkriteria as $key => $value) {
+            $PM = new ProfileMatchingController($kategori_id, $value->id);
+            $PM->matrixPenilai();
+            $result[$value->nama] = $PM->resultRank();
+        }
+        return Inertia::render('Penilaian/RiwayatShow', [
+            'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'penilaian'])->find($kategori_id),
+            'penilaian' => Penilaian::with(['datapenilaian'])->where('kategori_id', $kategori_id)->get(),
             'perhitungan' => $mtx,
             'rank' => $rank,
-            'aspek' => AspekKriteria::with(['kriteriapenilaian'])->find(1),
+            'aspek' => AspekKriteria::with(['kriteriapenilaian'])->find($aspek_id),
+            'aspekkriteria'=> $aspekkriteria,
             'keputusan'=> Keputusan::with(['karyawan', 'kategoripenilaian'])->where('kategori_id', '=', $kategori_id)->get(),
+            'hasilpenilaian'=> $result,
             'can' => [
                 'add' => Auth::user()->can('add penilaian'),
                 'edit' => Auth::user()->can('edit penilaian'),
-                'show' => true,
+                'show' => Auth::user()->can('show penilaian'),
                 'delete' => Auth::user()->can('delete penilaian'),
             ]
         ]);
