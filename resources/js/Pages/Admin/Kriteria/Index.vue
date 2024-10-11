@@ -127,7 +127,7 @@ function showDeleteModal(item) {
 }
 
 function deleteItem() {
-    DeleteForm.delete(route('kriteria.destroy'), {
+    DeleteForm.delete(route('Kriteria.destroy'), {
         preserveState: true,
         preserveScroll: true,
         onFinish: () => {
