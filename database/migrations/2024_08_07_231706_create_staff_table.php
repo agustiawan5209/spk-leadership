@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('departement_id')->constrained('departements')->onDelete('cascade');
             $table->string('nama');
             $table->string('alamat');
-            $table->enum('jabatan', ['Kepala Bagian', 'Manager OPS', 'Staff']);
+            $table->enum('jabatan', ['HRD', 'Manager OPS', 'Staff']);
             $table->timestamps();
         });
     }

@@ -40,7 +40,7 @@ require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';
 
 //router penilaian
-Route::middleware(['auth', 'verified', 'role:Kepala Bagian|Manager OPS|Staff'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:HRD|Manager OPS|Staff|Admin'])->group(function () {
 
     Route::group(['prefix' => 'penilaian', 'as' => "Penilaian."], function () {
         Route::controller(PenilaianController::class)->group(function () {
@@ -64,8 +64,8 @@ Route::middleware(['auth', 'verified', 'role:Kepala Bagian|Manager OPS|Staff'])-
     });
 });
 
-//router Staff Departement Kepala bagian
-Route::middleware(['auth', 'verified', 'role:Kepala Bagian'])->group(function () {
+//router Staff Departement HRD
+Route::middleware(['auth', 'verified', 'role:HRD'])->group(function () {
 
     Route::group(['prefix' => 'karyawan', 'as' => "Kepala.staff."], function () {
         Route::controller(StaffController::class)->group(function () {

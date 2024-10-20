@@ -10,7 +10,7 @@ use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\PenilaianController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:HRD'])->group(function () {
 
     // Router Gap
     Route::group(['prefix' => 'gap', 'as' => "Gap."], function () {

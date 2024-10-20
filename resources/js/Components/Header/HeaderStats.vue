@@ -26,13 +26,13 @@ const props = defineProps({
             <div>
                 <!-- Card stats -->
                 <div class="grid grid-cols-1 gap-4"
-                    :class="roleToCheck('Admin') ? 'md:grid-cols-3' : 'md:grid-cols-2'">
+                    :class="roleToCheck('HRD') ? 'md:grid-cols-3' : 'md:grid-cols-2'">
                     <div class="w-full h-full  px-4">
                         <card-stats statSubtitle="Jumlah Karyawan" :statTitle="data.staff" statArrow="up" statPercent="3.48"
                             statPercentColor="text-emerald-500" statDescripiron="Since last month"
                             :statIconName="['fas', 'user-group']" statIconColor="bg-yellow-500" />
                     </div>
-                    <div class="w-full h-full  px-4"  v-if="roleToCheck('Admin')">
+                    <div class="w-full h-full  px-4"  v-if="roleToCheck('HRD')">
                         <card-stats statSubtitle="Jumlah Evalusasi" :statTitle="data.evaluasi" statArrow="up" statPercent="3.48"
                             statPercentColor="text-emerald-500" statDescripiron="Since last month"
                             :statIconName="['fas', 'bars-progress']" statIconColor="bg-blue-500" />

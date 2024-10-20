@@ -208,11 +208,6 @@ const spinnerPage = ref(false);
                                     </tr>
 
                                     <tr class="">
-                                        <td class="text-sm border-b py-2 font-bold">Jumlah Penilaian Yang Masuk </td>
-                                        <td class="text-sm border-b text-gray-900">: {{ Penilai }}
-                                        </td>
-                                    </tr>
-                                    <tr class="">
                                         <td class="text-sm border-b py-2 font-bold">Status Penilaian </td>
                                         <td class="text-sm border-b text-gray-900"> :{{ kategori.status }}
                                         </td>

@@ -63,7 +63,7 @@ class StaffController extends Controller
         ];
         // dd($colums);
         return Inertia::render('Admin/Staff/Form', [
-            'jabatan' => Role::whereNot('name', 'Admin')->get(),
+            'jabatan' => Role::whereNot('name', 'HRD')->get(),
             'departement' => Departement::all(),
             'colums' => array_values($colums),
             'linkCreate' => 'Staff.store',
@@ -130,7 +130,7 @@ class StaffController extends Controller
         ]);
         return Inertia::render('Admin/Staff/Edit', [
             'staff' => $staff->with(['user'])->find(Request::input('slug')),
-            'jabatan' => Role::whereNot('name', 'Admin')->get(),
+            'jabatan' => Role::whereNot('name', 'HRD')->get(),
             'departement' => Departement::all(),
 
         ]);

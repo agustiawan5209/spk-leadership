@@ -50,7 +50,7 @@ window.addEventListener('resize', () => {
 
                         <img v-else class="inline-block w-20 h-20 rounded-full ring-2 ring-white" :src="'/images/vecteezy_profile-icon-design-vector_5544718.jpg'" alt="">
 
-                    <h1 class="text-xl font-bold text-center">{{ user.name }} - {{user.staff?user.staff.nama_departement: 'Admin'}}</h1>
+                    <h1 class="text-xl font-bold text-center">{{ user.name }} - {{user.staff?user.staff.nama_departement: 'HRD'}}</h1>
                 </div> -->
 
                 <Sidebar />
