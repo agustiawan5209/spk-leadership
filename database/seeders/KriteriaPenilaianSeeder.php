@@ -232,52 +232,52 @@ class KriteriaPenilaianSeeder extends Seeder
 
         KriteriaPenilaian::insert($kriteria_penilaians);
 
-        $no = 1;
-        $sub_kriterias = [];
-        for ($i = 1; $i < 7; $i++) {
-            $sub_kriterias = array(
-                array(
-                    "id" => $no++,
-                    "kriteria_id" => $i,
-                    "nama" => "Tidak Memuaskan",
-                    "bobot" => 1,
-                    "created_at" => "2024-08-10 01:43:52",
-                    "updated_at" => "2024-08-10 01:43:52",
-                ),
-                array(
-                    "id" => $no++,
-                    "kriteria_id" => $i,
-                    "nama" => "Kurang Memuaskan",
-                    "bobot" => 2,
-                    "created_at" => "2024-08-10 01:43:52",
-                    "updated_at" => "2024-08-10 01:43:52",
-                ),
-                array(
-                    "id" => $no++,
-                    "kriteria_id" => $i,
-                    "nama" => "Memenuhi harapan",
-                    "bobot" => 3,
-                    "created_at" => "2024-08-10 01:43:52",
-                    "updated_at" => "2024-08-10 01:43:52",
-                ),
-                array(
-                    "id" => $no++,
-                    "kriteria_id" => $i,
-                    "nama" => "Melebihi Harapan",
-                    "bobot" => 4,
-                    "created_at" => "2024-08-10 01:43:52",
-                    "updated_at" => "2024-08-10 01:43:52",
-                ),
-                array(
-                    "id" => $no++,
-                    "kriteria_id" => $i,
-                    "nama" => "Luar Biasa",
-                    "bobot" => 5,
-                    "created_at" => "2024-08-10 01:43:52",
-                    "updated_at" => "2024-08-10 01:43:52",
-                ),
-            );
-            SubKriteria::insert($sub_kriterias);
-        }
+        // $no = 1;
+        // $sub_kriterias = [];
+        // for ($i = 1; $i < 7; $i++) {
+        //     $sub_kriterias = array(
+        //         array(
+        //             "id" => $no++,
+        //             "kriteria_id" => $i,
+        //             "nama" => "Tidak Memuaskan",
+        //             "bobot" => 1,
+        //             "created_at" => "2024-08-10 01:43:52",
+        //             "updated_at" => "2024-08-10 01:43:52",
+        //         ),
+        //         array(
+        //             "id" => $no++,
+        //             "kriteria_id" => $i,
+        //             "nama" => "Kurang Memuaskan",
+        //             "bobot" => 2,
+        //             "created_at" => "2024-08-10 01:43:52",
+        //             "updated_at" => "2024-08-10 01:43:52",
+        //         ),
+        //         array(
+        //             "id" => $no++,
+        //             "kriteria_id" => $i,
+        //             "nama" => "Memenuhi harapan",
+        //             "bobot" => 3,
+        //             "created_at" => "2024-08-10 01:43:52",
+        //             "updated_at" => "2024-08-10 01:43:52",
+        //         ),
+        //         array(
+        //             "id" => $no++,
+        //             "kriteria_id" => $i,
+        //             "nama" => "Melebihi Harapan",
+        //             "bobot" => 4,
+        //             "created_at" => "2024-08-10 01:43:52",
+        //             "updated_at" => "2024-08-10 01:43:52",
+        //         ),
+        //         array(
+        //             "id" => $no++,
+        //             "kriteria_id" => $i,
+        //             "nama" => "Luar Biasa",
+        //             "bobot" => 5,
+        //             "created_at" => "2024-08-10 01:43:52",
+        //             "updated_at" => "2024-08-10 01:43:52",
+        //         ),
+        //     );
+        //     SubKriteria::insert($sub_kriterias);
+        // }
     }
 }
