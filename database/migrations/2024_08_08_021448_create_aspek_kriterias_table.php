@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('bobot')->nullable();
             $table->integer('core_factory');
             $table->integer('secondary_factory');
-            // $table->integer('')->nullable();
             $table->timestamps();
         });
     }
