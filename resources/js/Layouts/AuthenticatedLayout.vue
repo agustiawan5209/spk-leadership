@@ -109,7 +109,7 @@ window.addEventListener('resize', () => {
             </div>
         </div>
 
-        <div class="px-2 pt-6 2xl:container relative lg:left-[15%] xl:left-[20%] 2xl:left-[25%] lg:w-[75%] xl:w-[80%] 2xl:w-[85%] ">
+        <div class="px-2 pt-6 2xl:container relative lg:left-[15%] xl:left-[20%] 2xl:left-[15%] lg:w-[75%] xl:w-[80%] 2xl:w-[85%] ">
             <slot />
         </div>
     </div>
