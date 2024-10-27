@@ -90,7 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('/hapus-data/putusan', 'destroy')->name('destroy');
         });
     });
-    Route::get('riwayat', [PenilaianController::class, 'riwayat'])->name('admin.riwayat.penilaian');
+    Route::get('riwayat', [PenilaianController::class, 'riwayat'])->name('admin.riwayat.index');
     Route::get('riwayat/detail', [PenilaianController::class, 'riwayat_show'])->name('admin.riwayat.show');
 
 

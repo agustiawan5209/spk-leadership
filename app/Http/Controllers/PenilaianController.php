@@ -196,7 +196,7 @@ class PenilaianController extends Controller
     {
         $tableName = 'kategori_penilaians'; // Ganti dengan nama tabel yang Anda inginkan
         $columns = DB::getSchemaBuilder()->getColumnListing($tableName);
-
+            // dd(Request::only('search', 'order'));
         return Inertia::render('Penilaian/Riwayat', [
             'search' =>  Request::input('search'),
             'table_colums' => array_values(array_diff($columns, ['remember_token', 'posyandus_id', 'password', 'email_verified_at', 'created_at', 'updated_at', 'user_id'])),
