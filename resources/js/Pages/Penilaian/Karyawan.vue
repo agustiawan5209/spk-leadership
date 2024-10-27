@@ -53,7 +53,7 @@ function cekPenilaian(item) {
     for (let i = 0; i < props.penilaian.length; i++) {
         const element = props.penilaian[i];
         // Jika menemukan kecocokan, artinya penilaian sudah ada, maka kembalikan `false`
-        // console.log(item.staff.id , element.staff_id , element.staff_penilai_id , props.staffpenilai.id)
+        console.log(item.staff.id , element.staff_id , element.staff_penilai_id , props.staffpenilai.id)
         if (item.staff.id === element.staff_id && element.staff_penilai_id === props.staffpenilai.id) {
             return false;
         }

@@ -39,6 +39,7 @@ class PenilaianController extends Controller
             'search' =>  Request::input('search'),
             'table_colums' => array_values(array_diff($columns, ['remember_token', 'posyandus_id', 'password', 'email_verified_at', 'created_at', 'updated_at', 'user_id'])),
             'data' => KategoriPenilaian::with(['alternatif', 'penilaian'])->filter(Request::only('search', 'order'))
+                ->orderBy('id','desc')
                 ->where('status', 'aktif')
                 ->paginate(10),
             'can' => [
@@ -73,7 +74,8 @@ class PenilaianController extends Controller
         return Inertia::render('Penilaian/Form', [
             'alternatif' => $alternatif,
             'aspek' => AspekKriteria::with(['kriteriapenilaian'])->get(),
-            'kriteria' => KriteriaPenilaian::with(['subkriteria'])->get(),
+            'kriteria' => KriteriaPenilaian::with(['subkriteria'])
+            ->get(),
             'aspek_kriteria' => AspekKriteria::when(Request::input('aspek_id') ?? null, function ($query, $aspek) {
                 $query->where('id', $aspek);
             })->first(),
