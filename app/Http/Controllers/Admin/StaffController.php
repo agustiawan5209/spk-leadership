@@ -37,6 +37,7 @@ class StaffController extends Controller
             'search' =>  Request::input('search'),
             'table_colums' => array_values(array_diff($columns, ['posyandus_id', 'remember_token', 'password', 'email_verified_at', 'created_at', 'updated_at', 'user_id'])),
             'data' => Staff::filter(Request::only('search', 'order'))->with(['user'])
+                ->where('user_id', '!=', Auth::user()->id)
                 ->paginate(10),
             'can' => [
                 'add' => Auth::user()->can('add staff'),
