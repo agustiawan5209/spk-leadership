@@ -26,7 +26,7 @@ window.addEventListener('resize', () => {
 
     <transition-group name="nested">
         <aside v-if="showingNavigationDropdown" key="mobile"
-            class="fixed top-0 z-10 ml-0 flex h-screen w-full flex-col justify-between border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%] overflow-y-auto">
+            class="fixed top-0 z-50 ml-0 flex h-screen w-full flex-col justify-between border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%] overflow-y-auto">
             <button class="-mr-2 mt-5 h-16 w-12 border-r lg:hidden"
                 @click="showingNavigationDropdown = !showingNavigationDropdown">
                 <svg xmlns="http://www.w3.org/2000/svg" class="my-auto h-6 w-6 transition-all" fill="none"
@@ -42,7 +42,7 @@ window.addEventListener('resize', () => {
             </div>
         </aside>
         <aside key="dekstop"
-            class="fixed  top-0 z-10 ml-[-100%] flex h-screen w-full flex-col justify-between border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%] overflow-y-auto">
+            class="fixed  top-0 z-50 ml-[-100%] flex h-screen w-full flex-col justify-between border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%] overflow-y-auto">
 
             <div class="flex mt-14 flex-col w-full h-full !bg-primary text-white">
                 <!-- <div class="flex flex-col items-center py-6 gap-7 justify-center bg-secondary">

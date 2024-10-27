@@ -298,7 +298,7 @@ function truncateText(text) {
                                     <td class="px-2 py-1 md:px-4 md:py-3  text-xs font-medium text-gray-800 border relative"
                                         v-if="cekAksi()">
                                         <!-- Settings dropdownTable -->
-                                        <div class="ml-3 relative z-50 flex flex-row gap-2"
+                                        <div class="ml-3 relative z-[30] flex flex-row gap-2"
                                             v-if="crud.edit || crud.show || crud.delete || crud.reset_password">
 
                                             <Link v-if="crud.edit"
