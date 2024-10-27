@@ -96,11 +96,11 @@ class PenilaianController extends Controller
 
         // dd(Auth::user()->staff->departement_id);
         $alternatif = Alternatif::with(['staff', 'staff.departement'])
-            ->when(Auth::user()->hasRole('Staff'), function ($query) {
-                $query->whereHas('staff', function ($query) {
-                    $query->where('departement_id', '=', Auth::user()->staff->departement_id);
-                });
-            })
+            // ->when(Auth::user()->hasRole('Staff'), function ($query) {
+            //     $query->whereHas('staff', function ($query) {
+            //         $query->where('departement_id', '=', Auth::user()->staff->departement_id);
+            //     });
+            // })
             ->where('kategori_id', Request::input('kategori'))
             ->get();
 
