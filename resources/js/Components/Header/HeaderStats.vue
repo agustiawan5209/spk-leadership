@@ -42,7 +42,7 @@ const props = defineProps({
                             statPercentColor="text-emerald-500" statDescripiron="Since last month"
                             :statIconName="['fas', 'building']" statIconColor="bg-green-500" />
                     </div>
-                    <div class="w-full h-full  px-4" v-if="roleToCheck('Staff') || roleToCheck('Kepala Bagian')">
+                    <!-- <div class="w-full h-full  px-4" v-if="roleToCheck('Staff') || roleToCheck('Kepala Bagian')">
                         <card-stats statSubtitle="Jumlah Punishment" :statTitle="data.punishment" statArrow="up" statPercent="3.48"
                             statPercentColor="text-emerald-500" statDescripiron="Since last month"
                             :statIconName="['fas', 'sack-xmark']" statIconColor="bg-red-500" />
@@ -51,7 +51,7 @@ const props = defineProps({
                         <card-stats statSubtitle="Jumlah reward" :statTitle="data.reward" statArrow="up" statPercent="3.48"
                             statPercentColor="text-emerald-500" statDescripiron="Since last month"
                             :statIconName="['fas', 'gift']" statIconColor="bg-blue-500" />
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

@@ -41,21 +41,12 @@ const isOpenDropdown = (menu) => openDropdown.value.includes(menu);
                 <span class="-mr-1 font-medium">Dashboard</span>
             </NavLink>
         </li>
-        <li v-if="roleToCheck('Kepala Bagian')">
-            <NavLink :href="route('Kepala.staff.index')"
-                :active="route().current('Kepala.staff.index') || route().current('Penilaian.show')"
-                :icon="['fas', 'users']">
-
-                <span class="-mr-1 font-medium">Karyawan Departement</span>
-            </NavLink>
-        </li>
-
         <li>
-            <NavLink :href="route('Putusan.index')"
-                :active="route().current('Putusan.index')"
+            <NavLink :href="route('profile.edit')"
+                :active="route().current('profile.edit')"
                 :icon="['fas', 'circle-info']">
 
-                <span class="-mr-1 font-medium">Hasil Evaluasi</span>
+                <span class="-mr-1 font-medium">Data Diri</span>
             </NavLink>
         </li>
     </ul>

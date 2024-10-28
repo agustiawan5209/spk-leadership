@@ -57,14 +57,14 @@ const isOpenDropdown = (menu) => openDropdown.value.includes(menu);
                 <span class="-mr-1 font-medium">Riwayat Evaluasi</span>
             </NavLink>
         </li>
-        <li>
+        <!-- <li>
             <NavLink :href="route('Putusan.index')"
                 :active="route().current('Putusan.index')"
                 :icon="['fas', 'circle-info']">
 
                 <span class="-mr-1 font-medium">Punishment/Reward</span>
             </NavLink>
-        </li>
+        </li> -->
     </ul>
 </template>
 
