@@ -2,7 +2,6 @@
 import { defineProps } from 'vue';
 const props = defineProps(['hasil', 'aspek', 'alternatif'])
 
-console.log(props.alternatif)
 </script>
 
 <template>

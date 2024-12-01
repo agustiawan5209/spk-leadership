@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\PenilaianController;
 use App\Http\Controllers\Api\StaffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('list/staff/{departement_id}', [StaffController::class,'getStaff'])->name('api.staff.list');
+Route::get('penilaian/staff/', [PenilaianController::class,'create'])->name('api.staff.penilaian');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePenilaianFormRequest;
 use Inertia\Inertia;
 use App\Models\Penilaian;
 use App\Models\KategoriPenilaian;
@@ -39,7 +40,7 @@ class PenilaianController extends Controller
             'search' =>  Request::input('search'),
             'table_colums' => array_values(array_diff($columns, ['remember_token', 'posyandus_id', 'password', 'email_verified_at', 'created_at', 'updated_at', 'user_id'])),
             'data' => KategoriPenilaian::with(['alternatif', 'penilaian'])->filter(Request::only('search', 'order'))
-                ->orderBy('id','desc')
+                ->orderBy('id', 'desc')
                 ->where('status', 'aktif')
                 ->paginate(10),
             'can' => [
@@ -75,7 +76,7 @@ class PenilaianController extends Controller
             'alternatif' => $alternatif,
             'aspek' => AspekKriteria::with(['kriteriapenilaian'])->get(),
             'kriteria' => KriteriaPenilaian::with(['subkriteria'])
-            ->get(),
+                ->get(),
             'aspek_kriteria' => AspekKriteria::when(Request::input('aspek_id') ?? null, function ($query, $aspek) {
                 $query->where('id', $aspek);
             })->first(),
@@ -109,7 +110,7 @@ class PenilaianController extends Controller
             'aspek' => AspekKriteria::with(['kriteriapenilaian'])->get(),
             'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'alternatif.staff.departement'])
                 ->find(Request::input('kategori')),
-            'penilaian' => Penilaian::where('staff_penilai_id', Auth::user()->staff->id)->get(),
+            'penilaian' => Penilaian::where('kategori_id', '=', Request::input('kategori'))->where('staff_penilai_id', Auth::user()->staff->id)->get(),
             'staffpenilai' => Auth::user()->staff,
         ]);
     }
@@ -160,43 +161,58 @@ class PenilaianController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Store a newly created resource in storage.
      */
-    public function show(Penilaian $penilaian)
+    public function storeUlang(StorePenilaianFormRequest $request)
     {
-        //
-    }
+        // dd($request->all());
+        $kategori_id = $request->kategori;
+        $kategori = KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'alternatif.staff.departement'])->find($kategori_id);
+        $alternatif = array_values($request->alternatif);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Penilaian $penilaian)
-    {
-        //
-    }
+        for ($k = 0; $k < count($alternatif); $k++) {
+            $staff_penilai = Staff::find(Auth::user()->staff->id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePenilaianRequest $request, Penilaian $penilaian)
-    {
-        //
-    }
+            // Tanggal Penilaian
+            $tgl_penilaian = $request->has('tgl_penilaian') ? $request->tgl_penilaian : Carbon::now()->format('Y-m-d');
+            // Data Matrix Penilaian Karyawan
+            $data = $request->kriteria[$k];
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Penilaian $penilaian)
-    {
-        //
-    }
+            for ($i = 0; $i < count($data); $i++) {
+                // Pecah data karyawan
+                $aspek = AspekKriteria::find($data[$i]['aspek']);
+                $penilaian = Penilaian::create([
+                    'kategori_id' => $kategori->id,
+                    'kategori' => $kategori,
+                    'aspek_id' => $aspek->id,
+                    'aspek' => $aspek,
+                    'staff_penilai_id' => $staff_penilai->id,
+                    'staff_penilai' => $staff_penilai,
+                    'staff_id' => $alternatif[$k]['id'],
+                    'staff' => $alternatif[$k],
+                    'tgl_penilaian' => $tgl_penilaian,
+                ]);
 
+                $kriteria = $data[$i]['data'];
+                $nilai = $data[$i]['kriteria'];
+                for ($z = 0; $z < count($kriteria); $z++) {
+                    DataPenilaian::create([
+                        'penilaian_id' => $penilaian->id,
+                        'kriteria_id' => $kriteria[$z]['id'],
+                        'kriteria' => $kriteria[$z],
+                        'nilai' => $nilai[$z],
+                    ]);
+                }
+            }
+        }
+        return redirect()->back()->with('message', 'Penialaian Berhasil Di Buat');
+    }
 
     public function riwayat()
     {
         $tableName = 'kategori_penilaians'; // Ganti dengan nama tabel yang Anda inginkan
         $columns = DB::getSchemaBuilder()->getColumnListing($tableName);
-            // dd(Request::only('search', 'order'));
+        // dd(Request::only('search', 'order'));
         return Inertia::render('Penilaian/Riwayat', [
             'search' =>  Request::input('search'),
             'table_colums' => array_values(array_diff($columns, ['remember_token', 'posyandus_id', 'password', 'email_verified_at', 'created_at', 'updated_at', 'user_id'])),
@@ -237,8 +253,8 @@ class PenilaianController extends Controller
         $ranking = $this->rankingAll($result, $aspekkriteria);
 
         $alternatif = Alternatif::with(['staff', 'staff.departement'])
-        ->where('kategori_id', $kategori_id)
-        ->get();
+            ->where('kategori_id', $kategori_id)
+            ->get();
         return Inertia::render('Penilaian/RiwayatShow', [
             'kategori' => KategoriPenilaian::with(['alternatif', 'alternatif.staff', 'penilaian'])->find($kategori_id),
             'penilaian' => Penilaian::with(['datapenilaian'])->where('kategori_id', $kategori_id)->get(),
@@ -298,5 +314,4 @@ class PenilaianController extends Controller
         });
         return $ranking;
     }
-
 }

@@ -50,6 +50,7 @@ Route::middleware(['auth', 'verified', 'role:HRD|Manager OPS|Staff|Admin'])->gro
             Route::get('/edit-data/penilaian', 'edit')->name('edit');
             Route::get('/detail-data/penilaian', 'show')->name('show');
             Route::post('/store-data/penilaian', 'store')->name('store');
+            Route::post('/store-penilaian-data/penilaian', 'storeUlang')->name('storeUlang');
             Route::put('/update-data/penilaian', 'update')->name('update');
             Route::delete('/hapus-data/penilaian', 'destroy')->name('destroy');
         });

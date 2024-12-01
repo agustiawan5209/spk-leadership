@@ -312,7 +312,7 @@ const spinnerPage = ref(false);
                                     <Hasil :hasil="hasilpenilaian" :aspek="aspekkriteria" :alternatif="alternatif" />
                                 </div>
                                 <div class="col-span-full overflow-x-auto mt-3" v-if="tabAction == 3">
-                                    <Ranking :rank="ranking" />
+                                    <Ranking :rank="ranking" :kategori="kategori" />
                                 </div>
                             </transition-group>
                         </div>
